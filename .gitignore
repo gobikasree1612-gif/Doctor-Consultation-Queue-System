@@ -1,17 +1,10 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
 venv/
+.venv/
+__pycache__/
 .pytest_cache/
-
-# Node / Frontend
 node_modules/
-frontend/node_modules/
-frontend/dist/
-.DS_Store
-
-# IDE & OS
-.vscode/
-.idea/
-Thumbs.db
+dist/
+.env
+*.db
+*.sqlite
+*.sqlite3
