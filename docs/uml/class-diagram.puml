@@ -1,0 +1,111 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadow true
+
+title Doctor Consultation Queue System - Conceptual & System Class Diagram
+
+class User {
+    + id: int
+    + username: string
+    + name: string
+    + role: string
+    + viewOwnReservations(): List<Reservation>
+    + cancelReservation(reservationId: int): boolean
+}
+
+class Resource {
+    + id: int
+    + slotCode: string
+    + name: string
+    + category: string
+    + scheduleInfo: string
+    + rate: int
+    + initialCapacity: int
+    + availableCapacity: int
+    + isActive: boolean
+    + hasAvailability(requestedQty: int): boolean
+}
+
+class Schedule {
+    + id: int
+    + resourceId: int
+    + scheduleDays: string
+    + timeWindow: string
+    + status: string
+}
+
+class Reservation {
+    + id: int
+    + bookingCode: string
+    + userId: int
+    + slotId: int
+    + customerName: string
+    + phone: string
+    + consultationDate: string
+    + identityReference: string
+    + savedRate: int
+    + baseAmount: int
+    + bookingCharge: int
+    + grandTotal: int
+    + status: string
+    + isCapacityRestored: boolean
+    + createdAt: datetime
+    + confirm(): void
+    + cancel(): void
+}
+
+class ReservationItem {
+    + id: int
+    + reservationId: int
+    + resourceId: int
+    + quantity: int
+    + savedResourceName: string
+    + savedRate: int
+    + calculateSubtotal(): int
+}
+
+class BookingStatusHistory {
+    + id: int
+    + bookingId: int
+    + oldStatus: string
+    + newStatus: string
+    + changedBy: string
+    + timestamp: datetime
+    + note: string
+}
+
+class AvailabilityService {
+    + validateQuantity(quantity: int): int
+    + checkActiveResource(resourceId: int): boolean
+    + checkAvailability(resourceId: int, qty: int): boolean
+    + reserveCapacity(resourceId: int, qty: int): boolean
+    + restoreCapacityOnce(reservationId: int): boolean
+}
+
+class BookingService {
+    + validateDetails(name: string, phone: string, date: string, ref: string): boolean
+    + calculateFare(rate: int, qty: int): Map<string, int>
+    + createReservation(userId: int, slotId: int, qty: int, details: Map): Reservation
+    + cancelReservation(reservationId: int, userId: int): Reservation
+    + advanceStatus(reservationId: int, newStatus: string, adminUser: User): Reservation
+}
+
+User "1" -- "0..*" Reservation : owns >
+Reservation "1" -- "1..*" ReservationItem : contains >
+Resource "1" -- "0..*" ReservationItem : referenced by >
+Resource "1" -- "0..*" Schedule : scheduled by >
+Reservation "1" -- "0..*" BookingStatusHistory : logs >
+
+BookingService ..> AvailabilityService : uses >
+BookingService ..> Reservation : manages >
+AvailabilityService ..> Resource : validates >
+
+note right of Resource
+  Mapped to 'consultation_slots' table in database.
+end note
+
+note right of Reservation
+  Mapped to 'bookings' table in database.
+end note
+
+@endluml

@@ -1,0 +1,46 @@
+@startuml
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam monochrome false
+skinparam shadow true
+
+title Doctor Consultation Queue System - Use Case Diagram
+
+actor "User (Patient)" as User
+actor "Administrator" as Admin
+
+rectangle "Doctor Consultation Queue System" {
+    usecase "UC1: Search & View Active Consultation Slots" as UC1
+    usecase "UC2: Select Slot & Quantity (BR1/BR2)" as UC2
+    usecase "UC3: Enter Booking Details (BR5)" as UC3
+    usecase "UC4: View Live Fare Breakdown (BR4)" as UC4
+    usecase "UC5: Confirm Reservation (BR7)" as UC5
+    usecase "UC6: View Own Bookings & Details (BR10)" as UC6
+    usecase "UC7: Cancel Eligible Confirmed Booking (BR9)" as UC7
+
+    usecase "UC8: View All Queue Bookings & Statuses" as UC8
+    usecase "UC9: Inspect Booking Audit Trail History" as UC9
+    usecase "UC10: Advance Booking Status (BR8)" as UC10
+    usecase "UC11: Update Slot Rate (BR3 Snapshot Test)" as UC11
+
+    usecase "UC12: Recheck Availability & Decrement Capacity" as UC12
+    usecase "UC13: Restore Slot Capacity Exactly Once" as UC13
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+
+UC5 ..> UC12 : <<include>>
+UC7 ..> UC13 : <<include>>
+
+@enduml
